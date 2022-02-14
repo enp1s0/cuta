@@ -1,5 +1,5 @@
-#ifndef __CUTT_UTILS_HPP__
-#define __CUTT_UTILS_HPP__
+#ifndef __CUTT_SRC_UTILS_HPP__
+#define __CUTT_SRC_UTILS_HPP__
 #include <stdexcept>
 #include <sstream>
 
