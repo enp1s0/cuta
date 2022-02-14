@@ -2,21 +2,24 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <random>
+
+constexpr unsigned num_sampling = 100;
 
 template <class T>
 void reshape_test(
 		const std::vector<unsigned> mode_dim
 		) {
-	std::vector<std::pair<std::string, std::size_t>> mode;
-	std::vector<std::string> original_mode;
+	cutt::mode_t original_mode;
+	std::vector<std::string> original_mode_order;
 	for (unsigned i = 0; i < mode_dim.size(); i++) {
 		const auto name = "m" + std::to_string(i);
-		mode.push_back(std::make_pair(name, mode_dim[i]));
+		cutt::utils::insert_mode(original_mode, name, mode_dim[i]);
 
-		original_mode.push_back(name);
+		original_mode_order.push_back(name);
 	}
-	std::vector<std::string> reshaped_mode(mode.size());
-	std::reverse_copy(original_mode.begin(), original_mode.end(), reshaped_mode.begin());
+	std::vector<std::string> reshaped_mode_order(original_mode.size());
+	std::reverse_copy(original_mode_order.begin(), original_mode_order.end(), reshaped_mode_order.begin());
 
 	std::size_t dim_product = 1;
 	for (const auto d : mode_dim) {
@@ -37,17 +40,58 @@ void reshape_test(
 	cudaMalloc(&d_reshaped_ptr, sizeof(T) * dim_product);
 
 	cutt::reshape(
-			d_original_ptr,
 			d_reshaped_ptr,
-			mode,
-			reshaped_mode
+			d_original_ptr,
+			original_mode,
+			reshaped_mode_order
 			);
+
+	// check via sampling
+	cutt::mode_t reshaped_mode;
+	for (const auto& o : reshaped_mode_order) {
+		for (const auto& m : original_mode) {
+			if (m.first == o) {
+				cutt::utils::insert_mode(reshaped_mode, o, m.second);
+			}
+		}
+	}
+
+	std::mt19937 mt(0);
+	unsigned num_correct = 0;
+	for (unsigned i = 0; i < num_sampling; i++) {
+		std::unordered_map<std::string, std::size_t> pos;
+		for (const auto& m : original_mode) {
+			std::uniform_int_distribution<std::size_t> dist(0, m.second - 1);
+			pos.insert(std::make_pair(m.first, dist(mt)));
+		}
+
+		const auto h_v = h_original_ptr[cutt::utils::get_index(original_mode, pos)];
+
+		T d_v;
+		cudaMemcpy(&d_v, d_reshaped_ptr + cutt::utils::get_index(reshaped_mode, pos), sizeof(T), cudaMemcpyDefault);
+
+		if (d_v == h_v) {
+			num_correct++;
+		} else {
+			std::printf("%e != %e\n", d_v, h_v);
+		}
+	}
 
 	cudaFree(d_original_ptr);
 	cudaFree(d_reshaped_ptr);
 	cudaFree(h_original_ptr);
+
+	// Output result
+	std::printf("shape(");
+	for (unsigned i = 0; i < mode_dim.size() - 1; i++) {
+		std::printf("%u,", mode_dim[i]);
+	}
+	std::printf("%u): ", mode_dim[mode_dim.size() - 1]);
+	std::printf("Test %5u / %5u Passed\n", num_correct, num_sampling);
 }
 
 int main() {
 	reshape_test<float>({1000, 1000, 1000});
+	reshape_test<float>({10, 10, 10});
+	reshape_test<float>({2, 1, 1});
 }
