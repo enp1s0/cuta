@@ -7,11 +7,11 @@ template <class T>
 void reshape_test(
 		const std::vector<unsigned> mode_dim
 		) {
-	std::unordered_map<std::string, std::size_t> mode;
+	std::vector<std::pair<std::string, std::size_t>> mode;
 	std::vector<std::string> original_mode;
 	for (unsigned i = 0; i < mode_dim.size(); i++) {
 		const auto name = "m" + std::to_string(i);
-		mode.insert(std::make_pair(name, mode_dim[i]));
+		mode.push_back(std::make_pair(name, mode_dim[i]));
 
 		original_mode.push_back(name);
 	}
@@ -37,7 +37,6 @@ void reshape_test(
 			original_ptr,
 			reshaped_ptr,
 			mode,
-			original_mode,
 			reshaped_mode
 			);
 
