@@ -44,3 +44,17 @@ install(TARGETS cutt
 	LIBRARY DESTINATION lib
 	PUBLIC_HEADER DESTINATION include/cutt
 	)
+
+##########################################################################
+# Tests
+##########################################################################
+
+# Directory
+set(TESTSRCDIR test)
+
+foreach(test reshape)
+	set(test_out ${test}.test)
+	add_executable(${test_out} ${TESTSRCDIR}/${test}_test.cu ${HEADERS})
+	target_include_directories(${test_out} PRIVATE ${INCDIR})
+	target_link_libraries(${test_out} PRIVATE cutt)
+endforeach()
