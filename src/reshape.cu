@@ -30,11 +30,14 @@ __global__ void reshpae_kernel (
 	for (unsigned i = 0; i < num_mode; i++) {
 		src_i += (src_j % c_original_dim[i]) * c_original_stride[i];
 		src_j /= c_original_dim[i];
+	}
+	const auto v = src_ptr[src_i];
+
+	for (unsigned i = 0; i < num_mode; i++) {
 		dst_i += (dst_j % c_reshaped_dim[i]) * c_reshaped_stride[i];
 		dst_j /= c_reshaped_dim[i];
 	}
-
-	dst_ptr[dst_i] = src_ptr[src_i];
+	dst_ptr[dst_i] = v;
 }
 } // noname namespace
 
