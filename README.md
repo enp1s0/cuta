@@ -1,6 +1,6 @@
 # cutt - CUDA Tensor Toolkit
 
-Cutt is a auxiliary library for tensor operations on NVIDIA GPU.
+An auxiliary library for tensor operations on NVIDIA GPU.
 
 ## Functionalities
 - `cutt::reshape`
