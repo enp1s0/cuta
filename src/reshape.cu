@@ -1,4 +1,5 @@
 #include <cutt/reshape.hpp>
+#include "utils.hpp"
 #include <cuda_fp16.h>
 
 namespace {
@@ -81,10 +82,10 @@ void cutt::reshape(
 		original_dim   [i] = mode.at(original_order[i]);
 	}
 
-	cudaMemcpyToSymbolAsync(c_reshaped_stride, reshaped_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream);
-	cudaMemcpyToSymbolAsync(c_original_stride, original_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream);
-	cudaMemcpyToSymbolAsync(c_reshaped_dim   , reshaped_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream);
-	cudaMemcpyToSymbolAsync(c_original_dim   , original_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream);
+	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_stride, reshaped_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
+	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_original_stride, original_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
+	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_dim   , reshaped_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
+	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_original_dim   , original_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
 
 	const unsigned block_size = 256;
 	const auto grid_size = (dim_product + block_size - 1) / block_size;
