@@ -23,25 +23,29 @@ void reshape_test(
 		dim_product *= d;
 	}
 
-	T* original_ptr;
-	cudaMallocManaged(&original_ptr, sizeof(T) * dim_product);
+	T* d_original_ptr;
+	cudaMalloc(&d_original_ptr, sizeof(T) * dim_product);
 	const auto mom = std::sqrt(static_cast<T>(dim_product));
+	T* h_original_ptr;
+	cudaMallocHost(&h_original_ptr, sizeof(T) * dim_product);
 	for (std::size_t i = 0; i < dim_product; i++) {
-		original_ptr[i] = i / mom;
+		h_original_ptr[i] = i / mom;
 	}
+	cudaMemcpy(d_original_ptr, h_original_ptr, sizeof(T) * dim_product, cudaMemcpyDefault);
 
-	T* reshaped_ptr;
-	cudaMallocManaged(&reshaped_ptr, sizeof(T) * dim_product);
+	T* d_reshaped_ptr;
+	cudaMalloc(&d_reshaped_ptr, sizeof(T) * dim_product);
 
 	cutt::reshape(
-			original_ptr,
-			reshaped_ptr,
+			d_original_ptr,
+			d_reshaped_ptr,
 			mode,
 			reshaped_mode
 			);
 
-	cudaFree(original_ptr);
-	cudaFree(reshaped_ptr);
+	cudaFree(d_original_ptr);
+	cudaFree(d_reshaped_ptr);
+	cudaFree(h_original_ptr);
 }
 
 int main() {
