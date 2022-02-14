@@ -23,6 +23,7 @@ file(GLOB HEADERS "${INCDIR}/cutt/*.hpp")
 SET(lib_name cutt)
 add_library(${lib_name} STATIC
 	${SRCDIR}/reshape.cu
+	${SRCDIR}/utils.hpp
 	${HEADERS}
 	)
 
