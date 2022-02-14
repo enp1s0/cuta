@@ -36,7 +36,7 @@ template <class T>
 void cutt::reshape(
 		T *const dst_ptr,
 		const T* const src_ptr,
-		const std::vector<std::pair<std::string, std::size_t>>& mode,
+		const cutt::mode_t& mode,
 		const std::vector<std::string>& reshaped_order,
 		cudaStream_t cuda_stream) {
 
