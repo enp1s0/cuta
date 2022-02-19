@@ -4,6 +4,8 @@ project(cutt LANGUAGES CXX CUDA)
 find_package(CUDA 11.0 REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
+set(TEST_CUTENSOR_UTILS OFF)
+
 # CUDA/CXX
 foreach(lang CXX CUDA)
     set(CMAKE_${lang}_STANDARD          17)
@@ -58,3 +60,12 @@ foreach(test reshape)
 	target_include_directories(${test_out} PRIVATE ${INCDIR})
 	target_link_libraries(${test_out} PRIVATE cutt)
 endforeach()
+
+if (${TEST_CUTENSOR_UTILS})
+	foreach(test cutensor)
+		set(test_out ${test}.test)
+		add_executable(${test_out} ${TESTSRCDIR}/${test}_test.cu ${HEADERS})
+		target_include_directories(${test_out} PRIVATE ${INCDIR})
+		target_link_libraries(${test_out} PRIVATE cutensor)
+	endforeach()
+endif()
