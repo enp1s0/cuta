@@ -21,10 +21,7 @@ void reshape_test(
 	std::vector<std::string> reshaped_mode_order(original_mode.size());
 	std::reverse_copy(original_mode_order.begin(), original_mode_order.end(), reshaped_mode_order.begin());
 
-	std::size_t dim_product = 1;
-	for (const auto d : mode_dim) {
-		dim_product *= d;
-	}
+	std::size_t dim_product = cutt::utils::get_num_elements(original_mode);
 
 	T* d_original_ptr;
 	cudaMalloc(&d_original_ptr, sizeof(T) * dim_product);

@@ -33,6 +33,16 @@ inline std::size_t get_index(
 	}
 	return index;
 }
+
+inline std::size_t get_num_elements(
+		const mode_t& mode
+		) {
+	std::size_t num = 1;
+	for (const auto& m : mode) {
+		num *= m.second;
+	}
+	return num;
+}
 } // namespace utils
 } // namespace cutt
 #endif
