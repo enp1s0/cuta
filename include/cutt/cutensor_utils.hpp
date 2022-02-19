@@ -51,6 +51,49 @@ template <> cutensorComputeType_t get_compute_type<uint32_t                     
 template <> cutensorComputeType_t get_compute_type<int32_t                      >() {return CUTENSOR_COMPUTE_32I;}
 template <> cutensorComputeType_t get_compute_type<uint8_t                      >() {return CUTENSOR_COMPUTE_8U;}
 template <> cutensorComputeType_t get_compute_type<int8_t                       >() {return CUTENSOR_COMPUTE_8I;}
+
+inline int get_extent_in_int(
+		const std::string str
+		) {
+	int res = 0;
+	for (unsigned i = 0; i < str.length(); i++) {
+		res = (res << 1) ^ static_cast<int>(str[i]);
+	}
+	return res;
+}
+
+inline std::vector<int> get_extent_list_in_int(
+		const mode_t& mode
+		) {
+	std::vector<int> vec(mode.size());
+	for (unsigned i = 0; i < mode.size(); i++) {
+		vec[i] = get_extent_in_int(mode[i].first);
+	}
+	return vec;
+}
+
+template <class T>
+inline cutensorTensorDescriptor_t get_descriptor(
+		const cutensorHandle_t cutensor_handle,
+		const mode_t& mode
+		) {
+	std::vector<int64_t> extent(mode.size());
+	for (unsigned i = 0; i < mode.size(); i++) {
+		extent[i] = mode[i].second;
+	}
+	cutensorTensorDescriptor_t desc;
+	cutensorInitTensorDescriptor(
+				&cutensor_handle,
+				&desc,
+				mode.size(),
+				extent.data(),
+				nullptr,
+				get_data_type<T>(),
+				CUTENSOR_OP_IDENTITY
+				);
+	return desc;
+}
+
 } // namespace cutensor
 } // namespace cutt
 #endif
