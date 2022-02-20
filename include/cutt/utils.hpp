@@ -43,6 +43,19 @@ inline std::size_t get_num_elements(
 	}
 	return num;
 }
+
+inline void print_mode(
+		const mode_t& mode,
+		const std::string name = ""
+		) {
+	if (name.length() != 0) {
+		std::printf("mode(%s):\n", name.c_str());
+	}
+	for (unsigned i = 0; i < mode.size(); i++) {
+		std::printf("|-\\- %s\n", mode[i].first.c_str());
+		std::printf("| %lu\n", mode[i].second);
+	}
+}
 } // namespace utils
 } // namespace cutt
 #endif
