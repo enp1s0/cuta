@@ -82,7 +82,7 @@ inline cutensorTensorDescriptor_t get_descriptor(
 		extent[i] = mode[i].second;
 	}
 	cutensorTensorDescriptor_t desc;
-	cutensorInitTensorDescriptor(
+	CUTT_CHECK_ERROR_M(cutensorInitTensorDescriptor(
 				&cutensor_handle,
 				&desc,
 				mode.size(),
@@ -90,7 +90,7 @@ inline cutensorTensorDescriptor_t get_descriptor(
 				nullptr,
 				get_data_type<T>(),
 				CUTENSOR_OP_IDENTITY
-				);
+				), "(cutensorInitTensorDescriptor)");
 	return desc;
 }
 
