@@ -42,6 +42,7 @@ void reshape_test(
 			original_mode,
 			reshaped_mode_order
 			);
+	cutt::utils::print_mode(original_mode, "input");
 
 	// check via sampling
 	cutt::mode_t reshaped_mode;
