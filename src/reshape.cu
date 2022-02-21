@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include <cuda_fp16.h>
 #include <unordered_map>
+#include <algorithm>
 
 namespace {
 constexpr unsigned max_num_mode = 30;
@@ -49,6 +50,23 @@ void cutt::reshape(
 
 	if (num_mode != reshaped_order.size()) {
 		throw std::runtime_error("The size of reshaped mode order list is different from mode list.");
+	}
+
+	// Check integration
+	std::vector<std::string> reshaped_mode_name = reshaped_order;
+	std::sort(reshaped_mode_name.begin(), reshaped_mode_name.end());
+	std::vector<std::string> mode_name;
+	for (const auto& m : mode) {
+		if (!std::binary_search(reshaped_mode_name.begin(), reshaped_mode_name.end(), m.first)) {
+			throw std::runtime_error("Reshaped mode list does not contain \"" + m.first + "\", which is in the source mode list");
+		}
+		mode_name.push_back(m.first);
+	}
+	std::sort(mode_name.begin(), mode_name.end());
+	for (const auto& m : reshaped_order) {
+		if (!std::binary_search(mode_name.begin(), mode_name.end(), m)) {
+			throw std::runtime_error("Unknown mode \"" + m + "\" in reshaped mode list which is not included in the source mode list");
+		}
 	}
 
 	// Calculate strides
