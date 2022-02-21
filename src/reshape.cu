@@ -58,14 +58,14 @@ void cutt::reshape(
 	std::vector<std::string> mode_name;
 	for (const auto& m : mode) {
 		if (!std::binary_search(reshaped_mode_name.begin(), reshaped_mode_name.end(), m.first)) {
-			throw std::runtime_error("Reshaped mode does not contain \"" + m.first + "\"");
+			throw std::runtime_error("Reshaped mode list does not contain \"" + m.first + "\", which is in the source mode list");
 		}
 		mode_name.push_back(m.first);
 	}
 	std::sort(mode_name.begin(), mode_name.end());
 	for (const auto& m : reshaped_order) {
 		if (!std::binary_search(mode_name.begin(), mode_name.end(), m)) {
-			throw std::runtime_error("Unknown mode \"" + m + "\" in reshaped mode.");
+			throw std::runtime_error("Unknown mode \"" + m + "\" in reshaped mode list which is not included in the source mode list");
 		}
 	}
 
