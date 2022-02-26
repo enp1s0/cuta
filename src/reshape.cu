@@ -10,6 +10,12 @@ __constant__ std::size_t c_reshaped_stride[max_num_mode];
 __constant__ std::size_t c_reshaped_dim   [max_num_mode];
 
 template <class T>
+struct VecType {using type = void; static const unsigned len = 0;};
+template <> struct VecType<double> {using type = double2; static const unsigned len = 2;};
+template <> struct VecType<float > {using type = float4 ; static const unsigned len = 4;};
+template <> struct VecType<half  > {using type = half2  ; static const unsigned len = 2;};
+
+template <class T, class VecT, unsigned VecLen>
 __global__ void reshpae_kernel (
 		T* const dst_ptr,
 		const T* const src_ptr,
@@ -17,19 +23,34 @@ __global__ void reshpae_kernel (
 		const std::size_t num_elements
 		) {
 	const auto tid = blockIdx.x * blockDim.x + threadIdx.x;
-	if (tid >= num_elements) {
+	if (tid * VecLen >= num_elements) {
 		return;
 	}
 
-	const auto v = src_ptr[tid];
+	if ((tid + 1) * VecLen < num_elements) {
+		const auto v = reinterpret_cast<const VecT*>(src_ptr)[tid];
 
-	auto dst_j = tid;
-	auto dst_i = decltype(tid)(0);
-	for (unsigned i = 0; i < num_mode; i++) {
-		dst_i += (dst_j % c_reshaped_dim[i]) * c_reshaped_stride[i];
-		dst_j /= c_reshaped_dim[i];
+		for (unsigned j = 0; j < VecLen; j++) {
+			auto dst_j = tid * VecLen + j;
+			auto dst_i = decltype(tid)(0);
+			for (unsigned i = 0; i < num_mode; i++) {
+				dst_i += (dst_j % c_reshaped_dim[i]) * c_reshaped_stride[i];
+				dst_j /= c_reshaped_dim[i];
+			}
+			dst_ptr[dst_i] = reinterpret_cast<const float*>(&v)[j];
+		}
+	} else {
+		for (unsigned j = 0; j < num_elements - tid * VecLen; j++) {
+			auto dst_j = tid * VecLen + j;
+			const auto v = src_ptr[dst_j];
+			auto dst_i = decltype(tid)(0);
+			for (unsigned i = 0; i < num_mode; i++) {
+				dst_i += (dst_j % c_reshaped_dim[i]) * c_reshaped_stride[i];
+				dst_j /= c_reshaped_dim[i];
+			}
+			dst_ptr[dst_i] = v;
+		}
 	}
-	dst_ptr[dst_i] = v;
 }
 } // noname namespace
 
@@ -92,10 +113,10 @@ void cutt::reshape(
 	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_stride, reshaped_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
 	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_dim   , reshaped_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
 
-	const unsigned block_size = 256;
-	const auto grid_size = (dim_product + block_size - 1) / block_size;
+	const unsigned block_size = 512;
 
-	reshpae_kernel<<<grid_size, block_size, 0, cuda_stream>>>(
+	const auto grid_size = ((dim_product + block_size - 1) / block_size + (VecType<T>::len - 1)) / VecType<T>::len;
+	reshpae_kernel<T, typename VecType<T>::type, VecType<T>::len><<<grid_size, block_size, 0, cuda_stream>>>(
 			dst_ptr,
 			src_ptr,
 			num_mode,
