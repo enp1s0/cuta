@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(cutt LANGUAGES CXX CUDA)
+project(cuta LANGUAGES CXX CUDA)
 
 find_package(CUDA 11.0 REQUIRED)
 find_package(CUDAToolkit REQUIRED)
@@ -20,9 +20,9 @@ SET(CMAKE_CUDA_ARCHITECTURES 70 75 80 86)
 set(INCDIR include)
 set(SRCDIR src)
 
-file(GLOB HEADERS "${INCDIR}/cutt/*.hpp")
+file(GLOB HEADERS "${INCDIR}/cuta/*.hpp")
 
-SET(lib_name cutt)
+SET(lib_name cuta)
 add_library(${lib_name} STATIC
 	${SRCDIR}/reshape.cu
 	${SRCDIR}/utils.hpp
@@ -36,15 +36,15 @@ target_link_libraries(${lib_name} PRIVATE
 	)
 
 set_target_properties(${lib_name} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-set_target_properties(${lib_name} PROPERTIES PUBLIC_HEADER ${INCDIR}/cutt/${library}.hpp)
+set_target_properties(${lib_name} PROPERTIES PUBLIC_HEADER ${INCDIR}/cuta/${library}.hpp)
 target_compile_options(${lib_name} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
 
 ##########################################################################
 # Installing
 ##########################################################################
-install(TARGETS cutt
+install(TARGETS cuta
 	LIBRARY DESTINATION lib
-	PUBLIC_HEADER DESTINATION include/cutt
+	PUBLIC_HEADER DESTINATION include/cuta
 	)
 
 ##########################################################################
@@ -58,7 +58,7 @@ foreach(test reshape)
 	set(test_out ${test}.test)
 	add_executable(${test_out} ${TESTSRCDIR}/${test}_test.cu ${HEADERS})
 	target_include_directories(${test_out} PRIVATE ${INCDIR})
-	target_link_libraries(${test_out} PRIVATE cutt)
+	target_link_libraries(${test_out} PRIVATE cuta)
 endforeach()
 
 if (${TEST_CUTENSOR_UTILS})

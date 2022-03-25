@@ -1,32 +1,32 @@
-#include <cutt/cutensor_utils.hpp>
+#include <cuta/cutensor_utils.hpp>
 
 using compute_t = float;
 
 int main() {
-	cutt::mode_t mode_A, mode_B, mode_C;
+	cuta::mode_t mode_A, mode_B, mode_C;
 
-	cutt::utils::insert_mode(mode_A, "a", 10);
-	cutt::utils::insert_mode(mode_A, "b", 10);
-	cutt::utils::insert_mode(mode_A, "c", 10);
+	cuta::utils::insert_mode(mode_A, "a", 1024);
+	cuta::utils::insert_mode(mode_A, "b", 1024);
+	cuta::utils::insert_mode(mode_A, "c", 1024);
 
-	cutt::utils::insert_mode(mode_B, "a", 10);
-	cutt::utils::insert_mode(mode_B, "b", 10);
-	cutt::utils::insert_mode(mode_B, "d", 10);
+	cuta::utils::insert_mode(mode_B, "a", 1024);
+	cuta::utils::insert_mode(mode_B, "b", 1024);
+	cuta::utils::insert_mode(mode_B, "d", 1024);
 
-	cutt::utils::insert_mode(mode_C, "c", 10);
-	cutt::utils::insert_mode(mode_C, "d", 10);
+	cuta::utils::insert_mode(mode_C, "c", 1024);
+	cuta::utils::insert_mode(mode_C, "d", 1024);
 
 	compute_t *d_A, *d_B, *d_C;
-	cudaMalloc(&d_A, sizeof(compute_t) * cutt::utils::get_num_elements(mode_A));
-	cudaMalloc(&d_B, sizeof(compute_t) * cutt::utils::get_num_elements(mode_B));
-	cudaMalloc(&d_C, sizeof(compute_t) * cutt::utils::get_num_elements(mode_C));
+	cudaMalloc(&d_A, sizeof(compute_t) * cuta::utils::get_num_elements(mode_A));
+	cudaMalloc(&d_B, sizeof(compute_t) * cuta::utils::get_num_elements(mode_B));
+	cudaMalloc(&d_C, sizeof(compute_t) * cuta::utils::get_num_elements(mode_C));
 
 	cutensorHandle_t cutensor_handle;
 	CUTT_CHECK_ERROR(cutensorInit(&cutensor_handle));
 
-	const auto desc_A = cutt::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_A);
-	const auto desc_B = cutt::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_B);
-	const auto desc_C = cutt::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_C);
+	const auto desc_A = cuta::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_A);
+	const auto desc_B = cuta::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_B);
+	const auto desc_C = cuta::cutensor::get_descriptor<compute_t>(cutensor_handle, mode_C);
 
 	uint32_t alignment_requirement_A;
 	CUTT_CHECK_ERROR(cutensorGetAlignmentRequirement(&cutensor_handle, d_A, &desc_A, &alignment_requirement_A));
@@ -37,11 +37,11 @@ int main() {
 
 	cutensorContractionDescriptor_t desc_contraction;
 	CUTT_CHECK_ERROR(cutensorInitContractionDescriptor(&cutensor_handle, &desc_contraction,
-				&desc_A, cutt::cutensor::get_extent_list_in_int(mode_A).data(), alignment_requirement_A,
-				&desc_B, cutt::cutensor::get_extent_list_in_int(mode_B).data(), alignment_requirement_B,
-				&desc_C, cutt::cutensor::get_extent_list_in_int(mode_C).data(), alignment_requirement_C,
-				&desc_C, cutt::cutensor::get_extent_list_in_int(mode_C).data(), alignment_requirement_C,
-				cutt::cutensor::get_compute_type<compute_t>()));
+				&desc_A, cuta::cutensor::get_extent_list_in_int(mode_A).data(), alignment_requirement_A,
+				&desc_B, cuta::cutensor::get_extent_list_in_int(mode_B).data(), alignment_requirement_B,
+				&desc_C, cuta::cutensor::get_extent_list_in_int(mode_C).data(), alignment_requirement_C,
+				&desc_C, cuta::cutensor::get_extent_list_in_int(mode_C).data(), alignment_requirement_C,
+				cuta::cutensor::get_compute_type<compute_t>()));
 
 	cutensorContractionFind_t find;
 	CUTT_CHECK_ERROR(cutensorInitContractionFind(&cutensor_handle, &find, CUTENSOR_ALGO_DEFAULT));
