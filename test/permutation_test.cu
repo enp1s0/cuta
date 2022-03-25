@@ -13,7 +13,7 @@ int main() {
 	{
 		std::vector<std::string> perm_order = {"b", "a", "e", "d", "c"};
 
-		const auto permutation = cuta::get_permutation(mode, perm_order);
+		const auto permutation = cuta::utils::get_permutation<>(mode, perm_order);
 
 		std::printf("permutation = ");
 		for (const auto& v : permutation) {
