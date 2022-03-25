@@ -3,15 +3,15 @@
 #include <stdexcept>
 #include <sstream>
 
-#define CUTT_CHECK_ERROR(status) cutt::detail::check_error(status, __FILE__, __LINE__, __func__)
-#define CUTT_CHECK_ERROR_M(status, message) cutt::detail::check_error(status, __FILE__, __LINE__, __func__, (message))
+#define CUTT_CHECK_ERROR(status) cuta::detail::check_error(status, __FILE__, __LINE__, __func__)
+#define CUTT_CHECK_ERROR_M(status, message) cuta::detail::check_error(status, __FILE__, __LINE__, __func__, (message))
 
-namespace cutt {
+namespace cuta {
 namespace detail {
 inline void check_error(cudaError_t error, const std::string filename, const std::size_t line, const std::string funcname, const std::string message = ""){
 	if(error != cudaSuccess){
 		std::stringstream ss;
-		ss << "[cutt error] ";
+		ss << "[cuta error] ";
 		ss << cudaGetErrorString(error);
 		if(message.length() != 0){
 			ss << " : " << message;
@@ -21,5 +21,5 @@ inline void check_error(cudaError_t error, const std::string filename, const std
 	}
 }
 } // namespace detail
-} // namespace cutt
+} // namespace cuta
 #endif

@@ -1,4 +1,4 @@
-#include <cutt/reshape.hpp>
+#include <cuta/reshape.hpp>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -10,18 +10,18 @@ template <class T>
 void reshape_test(
 		const std::vector<unsigned> mode_dim
 		) {
-	cutt::mode_t original_mode;
+	cuta::mode_t original_mode;
 	std::vector<std::string> original_mode_order;
 	for (unsigned i = 0; i < mode_dim.size(); i++) {
 		const auto name = "m" + std::to_string(i);
-		cutt::utils::insert_mode(original_mode, name, mode_dim[i]);
+		cuta::utils::insert_mode(original_mode, name, mode_dim[i]);
 
 		original_mode_order.push_back(name);
 	}
 	std::vector<std::string> reshaped_mode_order(original_mode.size());
 	std::reverse_copy(original_mode_order.begin(), original_mode_order.end(), reshaped_mode_order.begin());
 
-	std::size_t dim_product = cutt::utils::get_num_elements(original_mode);
+	std::size_t dim_product = cuta::utils::get_num_elements(original_mode);
 
 	T* d_original_ptr;
 	cudaMalloc(&d_original_ptr, sizeof(T) * dim_product);
@@ -36,20 +36,20 @@ void reshape_test(
 	T* d_reshaped_ptr;
 	cudaMalloc(&d_reshaped_ptr, sizeof(T) * dim_product);
 
-	cutt::reshape(
+	cuta::reshape(
 			d_reshaped_ptr,
 			d_original_ptr,
 			original_mode,
 			reshaped_mode_order
 			);
-	cutt::utils::print_mode(original_mode, "input");
+	cuta::utils::print_mode(original_mode, "input");
 
 	// check via sampling
-	cutt::mode_t reshaped_mode;
+	cuta::mode_t reshaped_mode;
 	for (const auto& o : reshaped_mode_order) {
 		for (const auto& m : original_mode) {
 			if (m.first == o) {
-				cutt::utils::insert_mode(reshaped_mode, o, m.second);
+				cuta::utils::insert_mode(reshaped_mode, o, m.second);
 			}
 		}
 	}
@@ -63,10 +63,10 @@ void reshape_test(
 			pos.insert(std::make_pair(m.first, dist(mt)));
 		}
 
-		const auto h_v = h_original_ptr[cutt::utils::get_index(original_mode, pos)];
+		const auto h_v = h_original_ptr[cuta::utils::get_index(original_mode, pos)];
 
 		T d_v;
-		cudaMemcpy(&d_v, d_reshaped_ptr + cutt::utils::get_index(reshaped_mode, pos), sizeof(T), cudaMemcpyDefault);
+		cudaMemcpy(&d_v, d_reshaped_ptr + cuta::utils::get_index(reshaped_mode, pos), sizeof(T), cudaMemcpyDefault);
 
 		if (d_v == h_v) {
 			num_correct++;

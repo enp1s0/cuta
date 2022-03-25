@@ -8,7 +8,7 @@
 #include <sstream>
 #include "utils.hpp"
 
-namespace cutt {
+namespace cuta {
 namespace cutensor {
 inline void check_error(cutensorStatus_t error, const std::string filename, const std::size_t line, const std::string funcname, const std::string message = ""){
 	if(error != CUTENSOR_STATUS_SUCCESS){
@@ -23,10 +23,10 @@ inline void check_error(cutensorStatus_t error, const std::string filename, cons
 	}
 }
 #ifndef CUTT_CHECK_ERROR
-#define CUTT_CHECK_ERROR(status) cutt::cutensor::check_error(status, __FILE__, __LINE__, __func__)
+#define CUTT_CHECK_ERROR(status) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__)
 #endif
 #ifndef CUTT_CHECK_ERROR_M
-#define CUTT_CHECK_ERROR_M(status, message) cutt::cutensor::check_error(status, __FILE__, __LINE__, __func__, message)
+#define CUTT_CHECK_ERROR_M(status, message) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__, message)
 #endif
 
 #define CUTT_DATA_TYPE_DEF(type_name, number_type, type_size) \
@@ -95,5 +95,5 @@ inline cutensorTensorDescriptor_t get_descriptor(
 }
 
 } // namespace cutensor
-} // namespace cutt
+} // namespace cuta
 #endif

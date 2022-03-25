@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace cutt {
+namespace cuta {
 using mode_t = std::vector<std::pair<std::string, std::size_t>>;
 
 namespace utils {
@@ -57,5 +57,5 @@ inline void print_mode(
 	}
 }
 } // namespace utils
-} // namespace cutt
+} // namespace cuta
 #endif
