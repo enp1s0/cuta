@@ -18,6 +18,8 @@ An auxiliary library for tensor operations on NVIDIA GPU.
   - Get the total number of elements in `mode` tensor
 - `cuta::utils::get_permutation<T=unsigned>(mode, order)`
   - Get the permutation order array (e.g. `[1, 0, 2, 3]`)
+- `cuta::utils::get_permutation(mode, order)`
+  - Get a permutated `mode_t`
 - `cuta::utils::get_dim_sizes<T=unsigned>(mode)`
   - Extract dim sizes from `mode`
 
