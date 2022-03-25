@@ -54,7 +54,7 @@ install(TARGETS cuta
 # Directory
 set(TESTSRCDIR test)
 
-foreach(test reshape)
+foreach(test reshape permutation)
 	set(test_out ${test}.test)
 	add_executable(${test_out} ${TESTSRCDIR}/${test}_test.cu ${HEADERS})
 	target_include_directories(${test_out} PRIVATE ${INCDIR})
