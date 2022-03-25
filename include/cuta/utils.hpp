@@ -44,6 +44,15 @@ inline std::size_t get_num_elements(
 	return num;
 }
 
+template <class T = std::size_t>
+inline std::vector<T> get_dim_sizes(const cuta::mode_t& mode) {
+	std::vector<T> sizes(mode.size());
+	unsigned i = 0;
+	for (const auto& m : mode) {
+		sizes[i++] = m.second;
+	}
+	return sizes;
+}
 
 template <class T = unsigned>
 inline std::vector<T> get_permutation(const cuta::mode_t mode, const std::vector<std::string>& reshaped_order) {
