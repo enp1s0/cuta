@@ -44,6 +44,31 @@ inline std::size_t get_num_elements(
 	return num;
 }
 
+
+template <class T = unsigned>
+inline std::vector<T> get_permutation(const cuta::mode_t mode, const std::vector<std::string>& reshaped_order) {
+	std::vector<T> permutation;
+
+	for (const auto& o : reshaped_order) {
+		unsigned i = 0;
+		bool found = false;
+		for (const auto m : mode) {
+			if (m.first == o) {
+				permutation.push_back(i);
+				found = true;
+				break;
+			}
+			i++;
+		}
+		if (!found) {
+			throw std::runtime_error("[cuta] Unknown mode name " + o + " (" + __func__ + ")");
+		}
+	}
+
+	return permutation;
+}
+
+
 inline void print_mode(
 		const mode_t& mode,
 		const std::string name = ""
