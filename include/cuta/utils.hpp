@@ -77,6 +77,27 @@ inline std::vector<T> get_permutation(const cuta::mode_t mode, const std::vector
 	return permutation;
 }
 
+inline cuta::mode_t get_permutated_mode(const cuta::mode_t mode, const std::vector<std::string>& reshaped_order) {
+	cuta::mode_t permutated_mode;
+
+	for (const auto& o : reshaped_order) {
+		unsigned i = 0;
+		bool found = false;
+		for (const auto m : mode) {
+			if (m.first == o) {
+				permutated_mode.push_back(m);
+				found = true;
+				break;
+			}
+			i++;
+		}
+		if (!found) {
+			throw std::runtime_error("[cuta] Unknown mode name " + o + " (" + __func__ + ")");
+		}
+	}
+
+	return permutated_mode;
+}
 
 inline void print_mode(
 		const mode_t& mode,
