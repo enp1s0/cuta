@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include <unordered_map>
 
 namespace cuta {
