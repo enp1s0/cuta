@@ -1,5 +1,5 @@
-#ifndef __CUTT_CUTENSOR_HELPERS_HPP__
-#define __CUTT_CUTENSOR_HELPERS_HPP__
+#ifndef __CUTA_CUTENSOR_HELPERS_HPP__
+#define __CUTA_CUTENSOR_HELPERS_HPP__
 #include <cuda_fp16.h>
 #include <mma.h>
 #include <cuComplex.h>
@@ -22,23 +22,23 @@ inline void check_error(cutensorStatus_t error, const std::string filename, cons
 		throw std::runtime_error(ss.str());
 	}
 }
-#ifndef CUTT_CHECK_ERROR
-#define CUTT_CHECK_ERROR(status) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__)
+#ifndef CUTA_CHECK_ERROR
+#define CUTA_CHECK_ERROR(status) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__)
 #endif
-#ifndef CUTT_CHECK_ERROR_M
-#define CUTT_CHECK_ERROR_M(status, message) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__, message)
+#ifndef CUTA_CHECK_ERROR_M
+#define CUTA_CHECK_ERROR_M(status, message) cuta::cutensor::check_error(status, __FILE__, __LINE__, __func__, message)
 #endif
 
-#define CUTT_DATA_TYPE_DEF(type_name, number_type, type_size) \
+#define CUTA_DATA_TYPE_DEF(type_name, number_type, type_size) \
 	template <> inline cudaDataType_t get_data_type<type_name>(){return CUDA_##number_type##_##type_size;}
 template <class T>
 inline cudaDataType_t get_data_type();
-CUTT_DATA_TYPE_DEF(half, R, 16F);
-CUTT_DATA_TYPE_DEF(half2, C, 16F);
-CUTT_DATA_TYPE_DEF(float, R, 32F);
-CUTT_DATA_TYPE_DEF(cuComplex, C, 32F);
-CUTT_DATA_TYPE_DEF(double, R, 64F);
-CUTT_DATA_TYPE_DEF(cuDoubleComplex, C, 64F);
+CUTA_DATA_TYPE_DEF(half, R, 16F);
+CUTA_DATA_TYPE_DEF(half2, C, 16F);
+CUTA_DATA_TYPE_DEF(float, R, 32F);
+CUTA_DATA_TYPE_DEF(cuComplex, C, 32F);
+CUTA_DATA_TYPE_DEF(double, R, 64F);
+CUTA_DATA_TYPE_DEF(cuDoubleComplex, C, 64F);
 
 template <class T>
 inline cutensorComputeType_t get_compute_type();
@@ -82,7 +82,7 @@ inline cutensorTensorDescriptor_t get_descriptor(
 		extent[i] = mode[i].second;
 	}
 	cutensorTensorDescriptor_t desc;
-	CUTT_CHECK_ERROR_M(cutensorInitTensorDescriptor(
+	CUTA_CHECK_ERROR_M(cutensorInitTensorDescriptor(
 				&cutensor_handle,
 				&desc,
 				mode.size(),

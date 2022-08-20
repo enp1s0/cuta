@@ -107,8 +107,8 @@ void cuta::reshape(
 		}
 	}
 
-	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_stride, reshaped_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
-	CUTT_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_dim   , reshaped_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
+	CUTA_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_stride, reshaped_stride.data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
+	CUTA_CHECK_ERROR(cudaMemcpyToSymbolAsync(c_reshaped_dim   , reshaped_dim   .data(), sizeof(std::size_t) * num_mode, 0, cudaMemcpyHostToDevice, cuda_stream));
 
 	const unsigned block_size = 512;
 
@@ -128,8 +128,8 @@ void cuta::reshape(
 			);
 }
 
-#define CUTT_RESHAPE_INSTANCE(type) \
+#define CUTA_RESHAPE_INSTANCE(type) \
 template void cuta::reshape<type>(type* const, const type* const, const std::vector<std::pair<std::string, std::size_t>>&, const std::vector<std::string>&, cudaStream_t);
-CUTT_RESHAPE_INSTANCE(double);
-CUTT_RESHAPE_INSTANCE(float );
-CUTT_RESHAPE_INSTANCE(half  );
+CUTA_RESHAPE_INSTANCE(double);
+CUTA_RESHAPE_INSTANCE(float );
+CUTA_RESHAPE_INSTANCE(half  );
