@@ -1,5 +1,5 @@
-#ifndef __CUTT_RESHAPE_HPP__
-#define __CUTT_RESHAPE_HPP__
+#ifndef __CUTA_RESHAPE_HPP__
+#define __CUTA_RESHAPE_HPP__
 #include <cstdint>
 #include <string>
 #include <vector>

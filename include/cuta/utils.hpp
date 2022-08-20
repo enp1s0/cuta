@@ -1,5 +1,5 @@
-#ifndef __CUTT_UTILS_HPP__
-#define __CUTT_UTILS_HPP__
+#ifndef __CUTA_UTILS_HPP__
+#define __CUTA_UTILS_HPP__
 #include <cstdint>
 #include <vector>
 #include <string>

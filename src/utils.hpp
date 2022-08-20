@@ -1,10 +1,10 @@
-#ifndef __CUTT_SRC_UTILS_HPP__
-#define __CUTT_SRC_UTILS_HPP__
+#ifndef __CUTA_SRC_UTILS_HPP__
+#define __CUTA_SRC_UTILS_HPP__
 #include <stdexcept>
 #include <sstream>
 
-#define CUTT_CHECK_ERROR(status) cuta::detail::check_error(status, __FILE__, __LINE__, __func__)
-#define CUTT_CHECK_ERROR_M(status, message) cuta::detail::check_error(status, __FILE__, __LINE__, __func__, (message))
+#define CUTA_CHECK_ERROR(status) cuta::detail::check_error(status, __FILE__, __LINE__, __func__)
+#define CUTA_CHECK_ERROR_M(status, message) cuta::detail::check_error(status, __FILE__, __LINE__, __func__, (message))
 
 namespace cuta {
 namespace detail {
