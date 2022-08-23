@@ -22,6 +22,8 @@ An auxiliary library for tensor operations on NVIDIA GPU.
   - Get a permutated `mode_t`
 - `cuta::utils::get_dim_sizes<T=unsigned>(mode)`
   - Extract dim sizes from `mode`
+- `cuta::utils::get_dim_names(mode)`
+  - Extract dim names from `mode`
 
 
 ## Installation
