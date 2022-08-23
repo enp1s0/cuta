@@ -18,6 +18,16 @@ inline void insert_mode(
 	mode.push_back(std::make_pair(name, dim));
 }
 
+inline std::vector<std::string> get_dim_names(
+		const cuta::mode_t& mode
+		) {
+	std::vector<std::string> dim_names(mode.size());
+	for (std::uint32_t i = 0; i < mode.size(); i++) {
+		dim_names[i] = mode[i].first;
+	}
+	return dim_names;
+}
+
 inline std::size_t get_index(
 		const mode_t& mode,
 		const std::unordered_map<std::string, std::size_t>& pos
