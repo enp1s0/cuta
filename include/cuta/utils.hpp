@@ -28,6 +28,92 @@ inline std::vector<std::string> get_dim_names(
 	return dim_names;
 }
 
+inline std::vector<std::string> get_intersection_dim_names(
+		const std::vector<std::string>& a_names,
+		const std::vector<std::string>& b_names
+		) {
+	std::vector<std::string> result;
+	for (const auto& a : a_names) {
+		for (const auto& b : b_names) {
+			if (a == b) {
+				result.push_back(a);
+				continue;
+			}
+		}
+	}
+	return result;
+}
+
+inline cuta::mode_t get_intersection_mode(
+		const cuta::mode_t& a_mode,
+		const std::vector<std::string>& b_names
+		) {
+	cuta::mode_t result;
+	for (const auto& a : a_mode) {
+		for (const auto& b : b_names) {
+			if (a.first == b) {
+				result.push_back(a);
+				continue;
+			}
+		}
+	}
+	return result;
+}
+
+inline cuta::mode_t get_intersection_mode(
+		const cuta::mode_t& a_mode,
+		const cuta::mode_t& b_mode
+		) {
+	return cuta::utils::get_intersection_mode(a_mode, cuta::utils::get_dim_names(b_mode));
+}
+
+inline std::vector<std::string> get_difference_dim_names(
+		const std::vector<std::string>& minuend_names,
+		const std::vector<std::string>& subtrahend_names
+		) {
+	std::vector<std::string> result;
+	for (const auto& m : minuend_names) {
+		bool add = true;
+		for (const auto& s : subtrahend_names) {
+			if (m == s) {
+				add = false;
+				break;
+			}
+		}
+		if (add) {
+			result.push_back(m);
+		}
+	}
+	return result;
+}
+
+inline cuta::mode_t get_difference_mode(
+		const cuta::mode_t& minuend_mode,
+		const std::vector<std::string>& subtrahend_names
+		) {
+	cuta::mode_t result;
+	for (const auto& m : minuend_mode) {
+		bool add = true;
+		for (const auto& s : subtrahend_names) {
+			if (m.first == s) {
+				add = false;
+				break;
+			}
+		}
+		if (add) {
+			result.push_back(m);
+		}
+	}
+	return result;
+}
+
+inline cuta::mode_t get_difference_mode(
+		const cuta::mode_t& minuend_mode,
+		const cuta::mode_t& subtrahend_mode
+		) {
+	return cuta::utils::get_difference_mode(minuend_mode, cuta::utils::get_dim_names(subtrahend_mode));
+}
+
 inline std::size_t get_index(
 		const mode_t& mode,
 		const std::unordered_map<std::string, std::size_t>& pos
