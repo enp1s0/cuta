@@ -61,6 +61,12 @@ foreach(test reshape permutation)
 	target_link_libraries(${test_out} PRIVATE cuta)
 endforeach()
 
+foreach(test mode)
+	set(test_out ${test}.test)
+	add_executable(${test_out} ${TESTSRCDIR}/${test}_test.cpp ${HEADERS})
+	target_include_directories(${test_out} PRIVATE ${INCDIR})
+endforeach()
+
 if (${TEST_CUTENSOR_UTILS})
 	foreach(test cutensor)
 		set(test_out ${test}.test)
