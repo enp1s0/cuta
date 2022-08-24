@@ -208,6 +208,20 @@ inline void print_mode(
 		std::printf("| %lu\n", mode[i].second);
 	}
 }
+
+inline std::string get_mode_string(
+		const cuta::mode_t& mode
+		) {
+	std::string string = "";
+
+	for (std::uint32_t i = 0; i < mode.size(); i++) {
+		string += mode[i].first + "[" + std::to_string(mode[i].second) + "]";
+		if (i + 1 != mode.size()) {
+			string += "-";
+		}
+	}
+	return string;
+}
 } // namespace utils
 } // namespace cuta
 #endif
